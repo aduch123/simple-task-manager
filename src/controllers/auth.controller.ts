@@ -7,12 +7,9 @@ import { authService } from '../services/auth.service.js';
 
 export const authController = {
   signup: asyncHandler(async (req: Request, res: Response) => {
-  console.log('✅ Signup controller reached');
   const { email, password } = req.body;
-  console.log('📧 Email:', email);
 
   const existingUser = await authService.findUserByEmail(email);
-  console.log('👤 Existing user:', existingUser);
 
   if (existingUser) {
     throw new ApiError(HTTP_STATUS.CONFLICT, 'User already exists');
@@ -22,7 +19,6 @@ export const authController = {
   const user = await authService.createUser(email, hashedPassword);
   const token = authService.generateAuthToken(user.id, user.email);
 
-  console.log('✅ Sending response');
   res.status(HTTP_STATUS.CREATED).json(
     new SuccessResponse(HTTP_STATUS.CREATED, 'User registered successfully', {
       user: { id: user.id, email: user.email },
@@ -32,7 +28,6 @@ export const authController = {
 }),
 
   login: asyncHandler(async (req: Request, res: Response) => {
-    console.log('✅ LOGIN controller reached');
     const { email, password } = req.body;
 
     const user = await authService.findUserByEmail(email);
