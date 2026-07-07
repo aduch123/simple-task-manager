@@ -4,7 +4,7 @@ type AsyncController = (req: Request, res: Response, next: NextFunction) => Prom
 
 const asyncHandler = (fn: AsyncController) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    fn(req, res, next).catch(next);
+    return fn(req, res, next).catch(next);
   };
 };
 

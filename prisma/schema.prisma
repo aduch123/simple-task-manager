@@ -5,3 +5,35 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+// ===== USER & TASK MODELS =====
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // hashed
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus @default(PENDING)
+  userId      String // 👈 HERE – the foreign key column
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("tasks")
+}
