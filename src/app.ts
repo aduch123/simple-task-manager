@@ -1,7 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-const pinoHttp = require('pino-http');
+import pinoHttp from 'pino-http'; // ✅ works in ESM
 import { randomUUID } from 'crypto';
 import type { IncomingMessage } from 'http';
 
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 // 🟢 3. Link Express Request IDs directly to Pino logs
-app.use(pinoHttp({
+app.use((pinoHttp as any)({
   logger,
   genReqId: (req: IncomingMessage) => (req as any).id || randomUUID(),
 }));
