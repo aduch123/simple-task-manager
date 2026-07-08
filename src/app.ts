@@ -1,11 +1,9 @@
-// 1. Core Global Types Definition loaded immediately
-import './types/index.js'; 
-
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { pinoHttp } from 'pino-http';
+const pinoHttp = require('pino-http');
 import { randomUUID } from 'crypto';
+import type { IncomingMessage } from 'http';
 
 // Utilities & Configs
 import { env } from './config/env.js';
@@ -29,13 +27,10 @@ app.use((req, res, next) => {
 });
 
 // 🟢 3. Link Express Request IDs directly to Pino logs
-app.use(
-  pinoHttp({
-    logger,
-    // Forces Pino to use your custom generated request ID instead of its own
-    genReqId: (req) => (req as any).id || randomUUID(),
-  })
-);
+app.use(pinoHttp({
+  logger,
+  genReqId: (req: IncomingMessage) => (req as any).id || randomUUID(),
+}));
 
 // 🛡️ Security Middlewares
 app.use(helmet());
